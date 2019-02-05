@@ -3,6 +3,7 @@ src = $(wildcard src/*.c)
 obj = $(src:.c=.o)
 
 LDFLAGS = -std=c11 -g
+OSFLAGS = -lm
 
 hxd: $(obj)
 	@mkdir -p bin

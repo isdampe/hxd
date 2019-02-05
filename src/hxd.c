@@ -57,6 +57,7 @@ void hxd_process(struct hxd_session *session)
 		fseek(fh, offset, SEEK_SET);
 	}
 
+	printf(HXD_COLOR_RESET);
 	
 	fclose(fh);
 }

@@ -71,15 +71,22 @@ static void render_line(const int bytes_read, uint8_t *input_buffer, const int
 
 	printf(HXD_COLOR_CYAN);
 	printf(b, offset);
-	for (int i=0; i < bytes_read; ++i) {
-		render_byte(input_buffer[i]);
+	for (int i=0; i < session->bytes_per_line; ++i) {
+		if (i < bytes_read)
+			render_byte(input_buffer[i]);
+		else
+			printf("  ");
+
 		if ((i + 1) % session->bytes_per_group == 0)
 			printf(" ");
 	}
 	printf(" ");
 
-	for (int i=0; i < bytes_read; ++i) {
-		render_ascii(input_buffer[i]);
+	for (int i=0; i < session->bytes_per_line; ++i) {
+		if (i < bytes_read)
+			render_ascii(input_buffer[i]);
+		else
+			printf(" ");
 	}
 
 	printf("\n");

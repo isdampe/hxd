@@ -2,8 +2,8 @@
 #include <stdint.h>
 #define HXD_H
 
-#define HXD_DEFAULT_BYTES_PER_LINE 0x16
-#define HXD_DEFAULT_BYTES_PER_GROUP 0x8
+#define HXD_DEFAULT_BYTES_PER_LINE 32
+#define HXD_DEFAULT_BYTES_PER_GROUP 8
 
 #define HXD_COLOR_RED     "\x1b[31m"
 #define HXD_COLOR_GREEN   "\x1b[32m"

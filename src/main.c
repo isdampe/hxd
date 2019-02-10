@@ -1,6 +1,11 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#ifdef __APPLE__
+#include <unistd.h>
+#endif
+#ifdef __unix__
+#include <getopt.h>
+#endif
 #include "hxd.h"
 
 static void hxd_usage()

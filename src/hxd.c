@@ -6,10 +6,11 @@
 #include <stdint.h>
 #include "hxd.h"
 
-struct hxd_session hxd_create_session(const char *input_fp, 
-	const int bytes_per_line, const int bytes_per_group)
+struct hxd_session hxd_create_session(enum hxd_session_type session_type,
+	const char *input_fp, const int bytes_per_line, const int bytes_per_group)
 {
 	struct hxd_session session = {
+		.session_type = session_type,
 		.input_fp = NULL,
 		.bytes_per_line = bytes_per_line,
 		.bytes_per_group = bytes_per_group,
@@ -36,6 +37,23 @@ void hxd_destroy_session(struct hxd_session *session)
 }
 
 void hxd_process(struct hxd_session *session)
+{
+	switch (session->session_type) {
+		case HXD_SESSION_TYPE_STD:
+			process_std(session);
+			break;
+		case HXD_SESSION_TYPE_FIND_TEXT:
+			printf(HXD_COLOR_RED "Text search is not implemented yet.\n");
+			printf(HXD_COLOR_RESET);
+			break;
+		case HXD_SESSION_TYPE_FIND_BYTES:
+			printf(HXD_COLOR_RED "Byte search is not implemented yet.\n");
+			printf(HXD_COLOR_RESET);
+			break;
+	}
+}
+
+static void process_std(struct hxd_session *session)
 {
 	uint8_t input_buffer[session->bytes_per_line];
 	FILE *fh = fopen(session->input_fp, "r");

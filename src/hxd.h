@@ -13,17 +13,25 @@
 #define HXD_COLOR_CYAN    "\x1b[36m"
 #define HXD_COLOR_RESET   "\x1b[0m"
 
+enum hxd_session_type {
+	HXD_SESSION_TYPE_STD,
+	HXD_SESSION_TYPE_FIND_TEXT,
+	HXD_SESSION_TYPE_FIND_BYTES
+};
+
 struct hxd_session {
+	enum hxd_session_type session_type;
 	char *input_fp;
 	int bytes_per_line;
 	int bytes_per_group;
 	int file_size;
 };
 
-struct hxd_session hxd_create_session(const char *input_fp, 
-	const int bytes_per_line, const int bytes_per_group);
+struct hxd_session hxd_create_session(enum hxd_session_type session_type,
+	const char *input_fp, const int bytes_per_line, const int bytes_per_group);
 void hxd_destroy_session(struct hxd_session *session);
 void hxd_process(struct hxd_session *session);
+static void process_std(struct hxd_session *session);
 static void render_line(const int bytes_read, uint8_t *input_buffer, const int 
 	offset, struct hxd_session *session);
 static inline void render_byte(const uint8_t b);

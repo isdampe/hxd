@@ -20,3 +20,7 @@ hxd -h
 ```sh
 make uninstall
 ```
+
+## Screenshot
+
+![hxd example](https://i.imgur.com/ybf0GKQ.png)

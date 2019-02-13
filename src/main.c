@@ -55,7 +55,18 @@ int main(const int argc, char **argv)
 
 	struct hxd_session session = hxd_create_session(session_type, input_fp, 
 		bytes_per_line, bytes_per_group);
-	hxd_process(&session);
+	switch (session_type) {
+		case HXD_SESSION_TYPE_FIND_TEXT:
+			hxd_process_text_search(&session, search_ptr);
+			break;
+		case HXD_SESSION_TYPE_FIND_BYTES:
+			hxd_process_byte_search(&session, search_ptr);
+			break;
+		case HXD_SESSION_TYPE_STD:
+		default:
+			hxd_process_std(&session);
+			break;
+	}
 	hxd_destroy_session(&session);
 	return 0;
 }

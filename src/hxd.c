@@ -36,30 +36,13 @@ void hxd_destroy_session(struct hxd_session *session)
 		free(session->input_fp);
 }
 
-void hxd_process(struct hxd_session *session)
-{
-	switch (session->session_type) {
-		case HXD_SESSION_TYPE_STD:
-			process_std(session);
-			break;
-		case HXD_SESSION_TYPE_FIND_TEXT:
-			printf(HXD_COLOR_RED "Text search is not implemented yet.\n");
-			printf(HXD_COLOR_RESET);
-			break;
-		case HXD_SESSION_TYPE_FIND_BYTES:
-			printf(HXD_COLOR_RED "Byte search is not implemented yet.\n");
-			printf(HXD_COLOR_RESET);
-			break;
-	}
-}
-
-static void process_std(struct hxd_session *session)
+void hxd_process_std(struct hxd_session *session)
 {
 	uint8_t input_buffer[session->bytes_per_line];
 	FILE *fh = fopen(session->input_fp, "r");
 	if (fh == NULL) {
 		fprintf(stderr, "There was an error opening %s.\n", session->input_fp);
-		return;
+		exit(EXIT_FAILURE);
 	}
 
 	fseek(fh, 0x0, SEEK_END);
@@ -78,6 +61,16 @@ static void process_std(struct hxd_session *session)
 	printf(HXD_COLOR_RESET);
 	
 	fclose(fh);
+}
+
+void hxd_process_text_search(struct hxd_session *session, const char *subject)
+{
+	fprintf(stderr, HXD_COLOR_RED "Text search isn't implemented yet.\n");
+}
+
+void hxd_process_byte_search(struct hxd_session *session, const char *subject)
+{
+	fprintf(stderr, HXD_COLOR_RED "Byte search isn't implemented yet.\n");
 }
 
 static void render_line(const int bytes_read, uint8_t *input_buffer, const int 

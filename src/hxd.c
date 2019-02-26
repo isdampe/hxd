@@ -38,6 +38,12 @@ void hxd_destroy_session(struct hxd_session *session)
 
 void hxd_process_std(struct hxd_session *session)
 {
+	process_output(session, 0x0, -1);
+}
+
+static void process_output(struct hxd_session *session, int offset_start, 
+	int max_length)
+{
 	uint8_t input_buffer[session->bytes_per_line];
 	FILE *fh = fopen(session->input_fp, "r");
 	if (fh == NULL) {
@@ -49,9 +55,20 @@ void hxd_process_std(struct hxd_session *session)
 	session->file_size = ftell(fh);
 	rewind(fh);
 
+	if (offset_start > session->file_size) {
+		fprintf(stderr, "The file size is not big enough to begin dumping from that offset.\n");
+		fclose(fh);
+		exit(EXIT_FAILURE);
+	}
+
+	if (max_length < 0)
+		max_length = session->file_size;
+
 	int bytes_read = 0x0;
-	int offset = 0x0;
-	while (offset < session->file_size) {
+	int offset = offset_start;
+	fseek(fh, offset, SEEK_SET);
+
+	while (offset < session->file_size && bytes_read < max_length) {
 		bytes_read = fread(input_buffer, 1, session->bytes_per_line, fh);
 		render_line(bytes_read, input_buffer, offset, session);
 		offset += bytes_read;
@@ -65,7 +82,40 @@ void hxd_process_std(struct hxd_session *session)
 
 void hxd_process_text_search(struct hxd_session *session, const char *subject)
 {
-	fprintf(stderr, HXD_COLOR_RED "Text search isn't implemented yet.\n");
+	uint8_t input_buffer[2];
+	FILE *fh = fopen(session->input_fp, "r");
+	if (fh == NULL) {
+		fprintf(stderr, "There was an error opening %s.\n", session->input_fp);
+		exit(EXIT_FAILURE);
+	}
+
+	fseek(fh, 0x0, SEEK_END);
+	session->file_size = ftell(fh);
+	rewind(fh);
+
+	int offset = 0x0, bytes_read = 0x0;
+	int search_idx = 0x0, search_end = strlen(subject);
+
+	while (offset < session->file_size) {
+		bytes_read = fread(&input_buffer, 1, 1, fh);
+		offset += bytes_read;
+
+		if (input_buffer[0] == subject[search_idx]) {
+			search_idx++;
+			if (search_idx >= search_end) {
+				process_output(session, offset - (2 * search_end), (2 * search_end));
+				search_idx = 0;
+			}
+		} else {
+			search_idx = 0;
+		}
+
+		fseek(fh, offset, SEEK_SET);
+	}
+
+	printf(HXD_COLOR_RESET);
+	
+	fclose(fh);
 }
 
 void hxd_process_byte_search(struct hxd_session *session, const char *subject)

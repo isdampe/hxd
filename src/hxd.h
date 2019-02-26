@@ -31,6 +31,8 @@ struct hxd_session hxd_create_session(enum hxd_session_type session_type,
 	const char *input_fp, const int bytes_per_line, const int bytes_per_group);
 void hxd_destroy_session(struct hxd_session *session);
 void hxd_process_std(struct hxd_session *session);
+static void process_output(struct hxd_session *session, int offset_start, 
+	int max_length);
 void hxd_process_text_search(struct hxd_session *session, const char *subject);
 void hxd_process_byte_search(struct hxd_session *session, const char *subject);
 static void render_line(const int bytes_read, uint8_t *input_buffer, const int 

@@ -14,8 +14,8 @@ static void hxd_usage()
 	printf("\t-l   The number of bytes per line\n");
 	printf("\t-g   The number of bytes per group\n");
 	printf("\t-h   Show usage instructions\n");
-	printf("\t-t  Only display sections that match the given text\n");
-	printf("\t-b  Only display sections that match the given byte sequence\n");
+	printf("\t-t   Find sections that match the given text\n");
+	printf("\t-b   Find sections that match the given byte sequence\n");
 	exit(EXIT_FAILURE);
 }
 
